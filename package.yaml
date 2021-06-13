@@ -25,7 +25,7 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
-  - attoparsec
+  - vector
 
 executables:
   bfkhs:
@@ -49,3 +49,4 @@ tests:
     dependencies:
     - bfkhs
     - HUnit
+    - vector
