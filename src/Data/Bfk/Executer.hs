@@ -8,6 +8,8 @@ import Data.Char (chr)
 import Data.Int (Int8)
 import qualified Data.Vector as V
 import qualified Data.Vector.Mutable as VM
+import System.Exit
+import System.IO (hPutStrLn, stderr)
 
 type InstructionPointer = Int
 
@@ -38,8 +40,11 @@ executeInstructions insts =
       put (newByteVec, dataPtr)
     executeInstruction ReadValue = do
       (byteVec, dataPtr) <- get
-      line <- liftIO readLn
-      let c :: Char = read line
+      line <- liftIO getLine
+      when (length line /= 1) $ do
+        -- only accept "a" character
+        liftIO $ die "you must input only one character"
+      let c = head line
       mutableVec <- liftIO $ V.thaw byteVec -- temporarily mutable
       liftIO $ VM.write mutableVec dataPtr $ fromIntegral $ fromEnum c -- write variable (fromIntegral used for convert Int to Int8)
       newByteVec <- V.freeze mutableVec
