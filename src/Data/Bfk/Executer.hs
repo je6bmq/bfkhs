@@ -3,12 +3,18 @@
 module Data.Bfk.Executer where
 
 import Control.Monad.State
-import Data.Bfk.Parser
+    ( when,
+      MonadIO(liftIO),
+      forM_,
+      evalStateT,
+      MonadState(get, put),
+      StateT )
+import Data.Bfk.Parser ( BfkInstruction(..) )
 import Data.Char (chr)
 import Data.Int (Int8)
 import qualified Data.Vector as V
 import qualified Data.Vector.Mutable as VM
-import System.Exit
+import System.Exit ( die )
 import System.IO (hPutStrLn, stderr)
 
 type InstructionPointer = Int

@@ -1,6 +1,5 @@
 module Data.Bfk.Parser (parseInstructions, BfkInstruction (..), ParseInstructionError (..)) where
 
-import Control.Applicative
 import qualified Data.Vector as V
 
 -- Brain**kの命令
