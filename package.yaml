@@ -29,7 +29,7 @@ library:
   - mtl
 
 executables:
-  bfkhs:
+  hbfk:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -38,6 +38,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - bfkhs
+    - optparse-applicative
 
 tests:
   bfkhs-test:
