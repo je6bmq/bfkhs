@@ -6,7 +6,13 @@ main :: IO ()
 main = do
   runTestTT $
     TestList
-      [parseUnaryInstructionsTest, parsePairInstructionsTest, parseComplicatedInstructionsTest]
+      [ parseUnaryInstructionsTest,
+        parsePairInstructionsTest,
+        parseComplicatedInstructionsTest,
+        parseInstructionWithSpacesTest,
+        parseInstructionWithTabsTest,
+        parseInstructionWithNewLinesTest
+      ]
   return ()
 
 parseUnaryInstructionsTest :: Test
@@ -39,4 +45,31 @@ parseComplicatedInstructionsTest =
       "parse complicated test 3" ~: parseInstructions "[+-[>-.-<]]" ~?= Right (V.fromList [Loop $ V.fromList [IncrValue, DecrValue, Loop (V.fromList [IncrPtr, DecrValue, OutputValue, DecrValue, DecrPtr])]]),
       "parse complicated test 4" ~: parseInstructions "[+-[>-.-<][]]" ~?= Right (V.fromList [Loop (V.fromList [IncrValue, DecrValue, Loop (V.fromList [IncrPtr, DecrValue, OutputValue, DecrValue, DecrPtr]), Loop V.empty])]),
       "parse complicated test 5" ~: parseInstructions "[>[>[-.-]<]<]" ~?= Right (V.fromList [Loop (V.fromList [IncrPtr, Loop (V.fromList [IncrPtr, Loop (V.fromList [DecrValue, OutputValue, DecrValue]), DecrPtr]), DecrPtr])])
+    ]
+
+parseInstructionWithSpacesTest :: Test
+parseInstructionWithSpacesTest =
+  TestList
+    [ "parse with leading spaces" ~: parseInstructions "  ..." ~?= Right (V.fromList [OutputValue, OutputValue, OutputValue]),
+      "parse with trailing spaces" ~: parseInstructions ",,,  " ~?= Right (V.fromList [ReadValue, ReadValue, ReadValue]),
+      "parse with internal spaces" ~: parseInstructions "> . <" ~?= Right (V.fromList [IncrPtr, OutputValue, DecrPtr]),
+      "parse with spaces inside loop" ~: parseInstructions "< [> . <] >" ~?= Right (V.fromList [DecrPtr, Loop (V.fromList [IncrPtr, OutputValue, DecrPtr]), IncrPtr])
+    ]
+
+parseInstructionWithTabsTest :: Test
+parseInstructionWithTabsTest =
+  TestList
+    [ "parse with leading spaces" ~: parseInstructions "\t\t..." ~?= Right (V.fromList [OutputValue, OutputValue, OutputValue]),
+      "parse with trailing spaces" ~: parseInstructions ",,,\t\t" ~?= Right (V.fromList [ReadValue, ReadValue, ReadValue]),
+      "parse with internal spaces" ~: parseInstructions ">\t.\t<" ~?= Right (V.fromList [IncrPtr, OutputValue, DecrPtr]),
+      "parse with spaces inside loop" ~: parseInstructions "<\t[>\t.\t<]\t>" ~?= Right (V.fromList [DecrPtr, Loop (V.fromList [IncrPtr, OutputValue, DecrPtr]), IncrPtr])
+    ]
+
+parseInstructionWithNewLinesTest :: Test
+parseInstructionWithNewLinesTest =
+  TestList
+    [ "parse with leading spaces" ~: parseInstructions "\n\n..." ~?= Right (V.fromList [OutputValue, OutputValue, OutputValue]),
+      "parse with trailing spaces" ~: parseInstructions ",,,\n\n" ~?= Right (V.fromList [ReadValue, ReadValue, ReadValue]),
+      "parse with internal spaces" ~: parseInstructions ">\n.\n<" ~?= Right (V.fromList [IncrPtr, OutputValue, DecrPtr]),
+      "parse with spaces inside loop" ~: parseInstructions "<\n[>\n.\n<]\n>" ~?= Right (V.fromList [DecrPtr, Loop (V.fromList [IncrPtr, OutputValue, DecrPtr]), IncrPtr])
     ]
