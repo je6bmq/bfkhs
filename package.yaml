@@ -1,9 +1,9 @@
 name:                bfkhs
 version:             0.1.0.0
-github:              "githubuser/bfkhs"
+github:              "matchaBrea/bfkhs"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
+author:              "matchaBrea"
+maintainer:          "2829065+matchaBread@users.noreply.github.com"
 copyright:           "2021 Author name here"
 
 extra-source-files:
